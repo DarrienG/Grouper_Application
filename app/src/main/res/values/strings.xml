@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Grouper</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="empty_text">You have no groups, go ahead and make some!</string>
+    <string name="title_activity_group_selector">GroupSelector</string>
+</resources>
