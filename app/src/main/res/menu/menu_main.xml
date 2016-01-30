@@ -2,6 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.darrienglasser.grouper.MainActivity">
+
+    <item
+        android:id="@+id/action_purge_all"
+        android:orderInCategory="100"
+        android:title="@string/action_purge"
+        android:icon="@drawable/ic_action_purge"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
