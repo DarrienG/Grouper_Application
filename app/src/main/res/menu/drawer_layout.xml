@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/numbered_list"
+            android:icon="@drawable/ic_numbered_list"
+            android:title="@string/numbered_list"
+            android:checked="true"/>
+
+        <item
+            android:id="@+id/named_list"
+            android:icon="@drawable/ic_named_list"
+            android:title="@string/named_list"/>
+
+        <item
+            android:id="@+id/saved_names"
+            android:icon="@drawable/ic_saved_names"
+            android:title="@string/saved_names"/>
+    </group>
+</menu>

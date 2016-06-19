@@ -1,9 +1,5 @@
 <resources>
-    <!-- Save data file names-->
-    <string name="file_name">groups.data</string>
-    <string name="delimiter">, </string>
-
-    <!-- Main activity strings -->
+    <!-- Numbered List strings -->
     <string name="app_name">Grouper</string>
     <string name="action_settings">Settings</string>
     <string name="action_purge">Delete All</string>
@@ -21,9 +17,32 @@
     <!-- Save/cancel button strings -->
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="group_info">Enter group info</string>
 
     <string name="dyn_string">%1$s</string>
     <string name="num_groups">Num Items: %1$s</string>
     <string name="subg_amt">Items Per Group: %1$s</string>
+
+    <string name="named_list">Named Groups</string>
+    <string name="numbered_list">Numbered Groups</string>
+    <string name="saved_items">Saved Items</string>
+    <string name="saved_names">Saved Lists of Names</string>
+
+    <string name="drawer_open">Drawer Opened</string>
+    <string name="drawer_closed">Drawer Closed</string>
+
+    <string name="save_data">Save data</string>
+    <string name="new_name">New Name</string>
+
+    <string name="remove_name">Remove name</string>
+    <string name="empty_list_of_names">You have no lists of names, go ahead and make some!</string>
+
+    <string name="dyn_id">Group ID: %1$s</string>
+    <string name="id">Group ID: </string>
+    <string name="choose_group">Choose a group:</string>
+    <string name="group_name">Group Name</string>
+
+    <string name="intermediary_string">You don\'t have any lists of names yet, you need to make one first!</string>
+    <string name="intermediary_button">Take me there!</string>
 
 </resources>

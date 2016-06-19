@@ -8,12 +8,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ActionListAdapter extends RecyclerView.Adapter<ActionListAdapter.ViewHolder> {
+public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ViewHolder> {
 
     /**
      * Contains the randomized list of groups.
      */
-    private ArrayList<ArrayList<Integer>> mGroupContainer;
+    private ArrayList<ArrayList<String>> mGroupContainer;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         /**
@@ -30,14 +30,14 @@ public class ActionListAdapter extends RecyclerView.Adapter<ActionListAdapter.Vi
     /**
      * Public constructor.
      */
-    public ActionListAdapter(ArrayList<ArrayList<Integer>> groupContainer) {
+    public ActionAdapter(ArrayList<ArrayList<String>> groupContainer) {
         mGroupContainer = groupContainer;
     }
 
     @Override
-    public ActionListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int ViewType) {
+    public ActionAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int ViewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.action_row, parent, false);
+                R.layout.number_action_row, parent, false);
 
         return new ViewHolder(itemLayoutView);
     }

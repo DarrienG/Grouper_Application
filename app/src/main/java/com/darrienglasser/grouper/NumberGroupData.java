@@ -3,9 +3,9 @@ package com.darrienglasser.grouper;
 import io.realm.RealmObject;
 
 /**
- * Basic POJO data wrapper to hold all attributes for grouping application.
+ * Basic POJO data wrapper to hold all attributes for numbered lists.
  */
-public class GroupData extends RealmObject {
+public class NumberGroupData extends RealmObject {
     /** Custom name for group. */
     private String mName;
 
@@ -18,7 +18,7 @@ public class GroupData extends RealmObject {
     /**
      * Default constructor. Required for Realm.
      */
-    public GroupData() {}
+    public NumberGroupData() {}
 
     /**
      * Public constructor used to initialize group data.
@@ -26,7 +26,7 @@ public class GroupData extends RealmObject {
      * @param numGroups Number of desired groups.
      * @param sgSize Number of desired subgroups.
      */
-    public GroupData(String name, int numGroups, int sgSize) {
+    public NumberGroupData(String name, int numGroups, int sgSize) {
         mName = name;
         mNumGroups = numGroups;
         mSgSize = sgSize;
@@ -48,17 +48,9 @@ public class GroupData extends RealmObject {
         this.mName = mName;
     }
 
-      public void setNumGroups(int mNumGroups) {
-        this.mNumGroups = mNumGroups;
-    }
-
-    public void setSgSize(int sgSize) {
-        mSgSize = sgSize;
-    }
-
     @Override
     public String toString() {
-        return "GroupData{" +
+        return "NumberGroupData{" +
                 ", mName='" + mName + '\'' +
                 ", mNumGroups=" + mNumGroups +
                 ", mSgSize=" + mSgSize +

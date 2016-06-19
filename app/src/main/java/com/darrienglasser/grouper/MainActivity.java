@@ -1,188 +1,229 @@
 package com.darrienglasser.grouper;
 
-import android.animation.Animator;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.widget.TextView;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmQuery;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MAIN_ACTIVITY";
 
     /**
-     * Default text shown to use if no groups created.
+     * Drawer layout.
      */
-    private TextView mDefaultText;
+    private DrawerLayout mDrawerLayout;
 
     /**
-     * Holds list of data.
+     * Toggle for Actionbar Drawer.
      */
-    private RecyclerView mRecyclerView;
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
 
     /**
-     * Adapter for RecyclerView.
-      */
-    private DataAdapter mAdapter;
+     * Navigation view for drawer.
+     */
+    private NavigationView mNavView;
 
     /**
-     * Access to the database that contains all stored groups.
+     * Nav view toolbar.
      */
-    private Realm mRealm;
+    private Toolbar mToolbar;
 
-    /** Application context. */
-    private static Context mContext;
+    /**
+     * Access to shared preferences.
+     */
+    private SharedPreferences mSharedPrefs;
+
+    /**
+     * Global realm configuration.
+     */
+    public static RealmConfiguration mRealmConfig;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSharedPrefs = getPreferences(MODE_PRIVATE);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setBackground(
+                new ColorDrawable(
+                        ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
+        if (mRealmConfig == null) {
+            mRealmConfig = new RealmConfiguration.Builder(this).build();
+        }
+
+        Realm.setDefaultConfiguration(mRealmConfig);
+
+        mNavView = (NavigationView) findViewById(R.id.navigation_view);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.mainView);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_closed);
+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), GroupSelector.class);
-                startActivity(intent);
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                // no op
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // no op
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // no op
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                // no op
             }
         });
 
-        mContext = getApplicationContext();
-        RealmConfiguration config = new RealmConfiguration.Builder(this).build();
-        Realm.setDefaultConfiguration(config);
-        mRealm = Realm.getDefaultInstance();
+        mNavView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
 
-        // Set colors for TextView
-        mDefaultText = (TextView) findViewById(R.id.emptyText);
-        mDefaultText.setTextColor(Color.parseColor("#000000"));
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.numbered_list:
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.content_view, new NumberGroupFragment()).commit();
+
+                        item.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        setTitle(item.getTitle());
+                        break;
+                    case R.id.named_list:
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.content_view, new NameGroupFragment()).commit();
+
+                        item.setChecked(true);
+                        setTitle(item.getTitle());
+                        mDrawerLayout.closeDrawers();
+                        break;
+                    case R.id.saved_names:
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.content_view, new NameCreatorFragment()).commit();
+
+                        item.setChecked(true);
+                        setTitle(item.getTitle());
+                        mDrawerLayout.closeDrawers();
+                        break;
+                }
+
+                mNavView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+
+                // Save layout to restore later
+                saveLayoutState(item.getItemId());
+                return false;
+            }
+        });
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mActionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mActionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (checkDbExistence()) {
-            try {
-                RealmQuery<GroupData> query = mRealm.where(GroupData.class);
-                mRecyclerView = (RecyclerView) findViewById(R.id.fullList);
-                ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(
-                        0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                    @Override
-                    public boolean onMove(
-                            RecyclerView recyclerView,
-                            RecyclerView.ViewHolder viewHolder,
-                            RecyclerView.ViewHolder target) {
-
-                        return false;
-                    }
-
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        mAdapter.removeItem(viewHolder.getAdapterPosition(), mRealm);
-                        if (mAdapter.getItemCount() == 0) {
-                            reDrawDefaultLayout();
-                        }
-                    }
-                };
-
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-                itemTouchHelper.attachToRecyclerView(mRecyclerView);
-
-                mAdapter = new DataAdapter(query.findAll(), mContext);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                mRecyclerView.setAdapter(mAdapter);
-                mDefaultText.setVisibility(View.GONE);
-            } catch (NullPointerException e) {
-                Log.e(TAG, "Database not initialized.");
-                mDefaultText.setVisibility(View.VISIBLE);
-            }
-        }
+        restoreLayoutState();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_settings:
-                Snackbar.make(
-                        findViewById(R.id.mainView),
-                        "Settings to be implemented in a later update",
-                        Snackbar.LENGTH_LONG).show();
-
-                break;
-            case R.id.action_purge_all:
-                if (mAdapter != null && mAdapter.getItemCount() > 0) {
-                    mAdapter.destroyAll(mRealm);
-                    reDrawDefaultLayout();
-                } else {
-                    Snackbar.make(
-                            findViewById(R.id.mainView),
-                            "Nothing to delete!",
-                            Snackbar.LENGTH_LONG).show();
-                }
-                break;
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Checks to see if there are any items in the database.
+     * Helper method. Saves the current state of the nav drawer. This persists across the app
+     * lifecycle.
      *
-     * @return Status of database existence.
+     * @param tab Current tab selected.
      */
-    private boolean checkDbExistence() {
-        return !mRealm.isEmpty();
+    private void saveLayoutState(int tab) {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putInt(TAG, tab);
+        editor.apply();
     }
 
-    // BUG: Animation does not appear on first open
     /**
-     * Redraws default text with circle animation.
+     * Helper method. Restores the layout previously selected by the user.
      */
-    private void reDrawDefaultLayout() {
-        int cx = mDefaultText.getMeasuredWidth() / 2;
-        int cy = mDefaultText.getMeasuredHeight() / 2;
+    private void restoreLayoutState() {
+         int store = mSharedPrefs.getInt(TAG, -1);
 
-        int finalRadius = Math.max(
-                mDefaultText.getWidth(),
-                mDefaultText.getHeight()) / 2;
+        if (store != -1) {
+            mNavView.setCheckedItem(store);
+            setTitle(mNavView.getMenu().findItem(store).getTitle());
+        } else {
+            mNavView.getMenu().getItem(0).setChecked(true);
+            setTitle(mNavView.getMenu().getItem(0).getTitle());
+        }
 
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(mDefaultText, cx, cy, 0, finalRadius);
+        switch (store) {
+            case R.id.numbered_list:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_view, new NumberGroupFragment()).commit();
 
-        mDefaultText.setVisibility(View.VISIBLE);
-        anim.start();
+                break;
+            case R.id.named_list:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_view, new NameGroupFragment()).commit();
+                break;
+
+            case R.id.saved_names:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_view, new NameCreatorFragment()).commit();
+                break;
+            default:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_view, new NumberGroupFragment())
+                        .commit();
+
+                break;
+        }
     }
 }
+

@@ -16,7 +16,7 @@ import io.realm.RealmResults;
 /**
  * Activity used to display aggregated data.
  */
-public class ActionActivity extends AppCompatActivity {
+public class NumberListActionActivity extends AppCompatActivity {
     /**
      * Position where item is located in database.
      */
@@ -25,12 +25,12 @@ public class ActionActivity extends AppCompatActivity {
     /**
      * Data retrieved from database.
      */
-    private GroupData mData;
+    private NumberGroupData mData;
 
     /**
      * RecyclerView adapter.
      */
-    private ActionListAdapter mAdapter;
+    private ActionAdapter mAdapter;
 
     /**
      * List for holding data.
@@ -45,11 +45,11 @@ public class ActionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_action);
+        setContentView(R.layout.activity_number_list_action);
         position = getIntent().getIntExtra("DataPos", -1);
 
         mRealm = Realm.getDefaultInstance();
-        RealmResults<GroupData> data = mRealm.where(GroupData.class).findAll();
+        RealmResults<NumberGroupData> data = mRealm.where(NumberGroupData.class).findAll();
         mData = data.get(position);
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,7 +70,7 @@ public class ActionActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (mAdapter == null) {
-            mAdapter = new ActionListAdapter(generateRandList(mData));
+            mAdapter = new ActionAdapter(generateRandList(mData));
         }
 
         mRecyclerView.setAdapter(mAdapter);
@@ -112,17 +112,17 @@ public class ActionActivity extends AppCompatActivity {
      * @return Randomized data to be used.
      */
     @SuppressWarnings("unchecked")
-    public ArrayList<ArrayList<Integer>> generateRandList(GroupData data) {
+    public ArrayList<ArrayList<String>> generateRandList(NumberGroupData data) {
         int numGroups = data.getNumGroups(), subGroupSize = data.getSgSize();
-        ArrayList<ArrayList<Integer>> groupContainer = new ArrayList<>();
-        int[] randomizer = new int[numGroups];
+        ArrayList<ArrayList<String>> groupContainer = new ArrayList<>();
+        String[] randomizer = new String[numGroups];
         Random rand = new Random();
         for (int i = 0; i < numGroups; ++i) {
-            randomizer[i] = i + 1;
+            randomizer[i] = i + 1 + "";
         }
 
         for (int i = 0; i < numGroups; ++i) {
-            int tmp;
+            String tmp;
             int randSwap = rand.nextInt(numGroups);
 
             tmp = randomizer[randSwap];
@@ -130,11 +130,11 @@ public class ActionActivity extends AppCompatActivity {
             randomizer[i] = tmp;
         }
 
-        ArrayList<Integer> tmpList = new ArrayList<>(subGroupSize);
+        ArrayList<String> tmpList = new ArrayList<>(subGroupSize);
 
         for (int i = 0, count = 0; i < randomizer.length; ++i, ++count) {
             if (count >= subGroupSize) {
-                groupContainer.add((ArrayList<Integer>) tmpList.clone());
+                groupContainer.add((ArrayList<String>) tmpList.clone());
                 tmpList.clear();
                 count = 0;
             }

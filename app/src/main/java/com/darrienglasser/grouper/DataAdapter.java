@@ -17,7 +17,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     /**
      * Data bound to views.
      */
-    private static RealmResults<GroupData> sDataSet;
+    private static RealmResults<NumberGroupData> sDataSet;
 
     /**
      * Android context.
@@ -42,7 +42,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            Intent intent = new Intent(v.getContext(), ActionActivity.class);
+            Intent intent = new Intent(v.getContext(), NumberListActionActivity.class);
 
             intent.putExtra("DataPos", position);
             v.getContext().startActivity(intent);
@@ -54,15 +54,16 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
      *
      * @param dataset Data pushed to adapter.
      */
-    public DataAdapter(RealmResults<GroupData> dataset, Context context){
+    public DataAdapter(RealmResults<NumberGroupData> dataset, Context context){
         sDataSet = dataset;
         mContext = context;
     }
 
     @Override
     public DataAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int ViewType) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.main_row, parent, false);
+        View itemLayoutView =
+                LayoutInflater.from(
+                        parent.getContext()).inflate(R.layout.number_group_row, parent, false);
 
         return new ViewHolder(itemLayoutView);
     }
@@ -91,6 +92,12 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         return sDataSet.size();
     }
 
+    /**
+     * Helper method. Used for quick removal of item.
+     *
+     * @param position Position of item to remove.
+     * @param realm Accessor to database.
+     */
     public void removeItem (final int position, Realm realm) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override

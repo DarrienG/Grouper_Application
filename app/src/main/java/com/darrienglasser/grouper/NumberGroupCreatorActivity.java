@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import io.realm.Realm;
 
-public class GroupSelector extends AppCompatActivity {
+public class NumberGroupCreatorActivity extends AppCompatActivity {
 
     /**
      * Database used to store user input.
@@ -19,7 +19,7 @@ public class GroupSelector extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_selector);
+        setContentView(R.layout.activity_number_group_creator);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mRealm = Realm.getDefaultInstance();
@@ -56,11 +56,11 @@ public class GroupSelector extends AppCompatActivity {
 
             if (!(numGroups > 0) || !(numSubGroups > 0)) {
                 Toast.makeText(
-                        GroupSelector.this,
+                        NumberGroupCreatorActivity.this,
                         "Size cannot be less than 1",
                         Toast.LENGTH_SHORT).show();
             } else {
-                final GroupData data = new GroupData(
+                final NumberGroupData data = new NumberGroupData(
                         custString, numGroups, numSubGroups);
 
                 mRealm.executeTransaction(new Realm.Transaction() {
