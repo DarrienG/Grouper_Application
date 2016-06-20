@@ -26,7 +26,6 @@ public class GroupSelector extends AppCompatActivity {
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        EditText initView = (EditText) findViewById(R.id.nameEditor);
     }
 
     public void cancel(View view) {
@@ -42,16 +41,36 @@ public class GroupSelector extends AppCompatActivity {
             Toast.makeText(
                     view.getContext(), "Please enter all fields", Toast.LENGTH_SHORT).show();
         } else {
-            final GroupData data = new GroupData(
-                    custString, Integer.parseInt(numGroupsString), Integer.parseInt(sgString));
+            Integer numGroups, numSubGroups;
+            try {
+                numGroups = Integer.parseInt(numGroupsString);
+            } catch (java.lang.NumberFormatException e) {
+                numGroups = Integer.MAX_VALUE;
+            }
 
-            mRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.copyToRealm(data);
-                }
-            });
-            finish();
+            try {
+                numSubGroups = Integer.parseInt(sgString);
+            } catch (java.lang.NumberFormatException e) {
+                numSubGroups = Integer.MAX_VALUE;
+            }
+
+            if (!(numGroups > 0) || !(numSubGroups > 0)) {
+                Toast.makeText(
+                        GroupSelector.this,
+                        "Size cannot be less than 1",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                final GroupData data = new GroupData(
+                        custString, numGroups, numSubGroups);
+
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.copyToRealm(data);
+                    }
+                });
+                finish();
+            }
         }
     }
 }
