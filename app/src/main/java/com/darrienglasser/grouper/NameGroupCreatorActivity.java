@@ -45,6 +45,11 @@ public class NameGroupCreatorActivity extends AppCompatActivity {
      */
     private Realm mRealm;
 
+    /**
+     * Integer parsed from EditText;
+     */
+    private int mParsedInt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +79,7 @@ public class NameGroupCreatorActivity extends AppCompatActivity {
                             new NameGroupData(
                                     mCustNameEditor.getText().toString(),
                                     mIdSpinner.getSelectedItem().toString(),
-                                    Integer.parseInt(mSgSizeEditor.getText().toString()));
+                                    mParsedInt);
 
                     mRealm.executeTransaction(new Realm.Transaction() {
                         @Override
@@ -124,8 +129,14 @@ public class NameGroupCreatorActivity extends AppCompatActivity {
      * Checks input to ensure it is valid.
      */
     private boolean validInput() {
+        try {
+            mParsedInt = Integer.parseInt(mSgSizeEditor.getText().toString());
+        } catch (NumberFormatException e) {
+            mParsedInt = 10000;
+        }
+
         return !mCustNameEditor.getText().toString().isEmpty()
                 && !mSgSizeEditor.toString().isEmpty()
-                && Integer.parseInt(mSgSizeEditor.getText().toString()) > 0;
+                && mParsedInt > 0;
     }
 }

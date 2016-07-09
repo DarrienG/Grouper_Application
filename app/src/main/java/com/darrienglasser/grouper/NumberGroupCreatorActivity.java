@@ -51,7 +51,7 @@ public class NumberGroupCreatorActivity extends AppCompatActivity {
             try {
                 numSubGroups = Integer.parseInt(sgString);
             } catch (java.lang.NumberFormatException e) {
-                numSubGroups = Integer.MAX_VALUE;
+                numSubGroups = 10000;
             }
 
             if (!(numGroups > 0) || !(numSubGroups > 0)) {
