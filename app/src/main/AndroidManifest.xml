@@ -62,7 +62,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.darrienglasser.grouper.MainActivity" />
         </activity>
-        <activity android:name=".IntermediaryNameCreatorActivity"></activity>
+        <activity android:name=".IntermediaryNameCreatorActivity" />
+        <activity android:name=".AboutActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.darrienglasser.grouper.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

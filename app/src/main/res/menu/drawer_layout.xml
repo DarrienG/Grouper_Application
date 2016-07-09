@@ -16,5 +16,17 @@
             android:id="@+id/saved_names"
             android:icon="@drawable/ic_saved_names"
             android:title="@string/saved_names"/>
+
+        <item android:title="@string/sub_items">
+            <menu>
+                <group android:checkableBehavior="none">
+                    <item
+                        android:id="@+id/about_app"
+                        android:icon="@drawable/ic_about_icon"
+                        android:title="@string/about" />
+                </group>
+            </menu>
+
+        </item>
     </group>
 </menu>

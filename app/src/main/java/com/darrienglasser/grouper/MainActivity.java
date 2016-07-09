@@ -1,5 +1,6 @@
 package com.darrienglasser.grouper;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
@@ -127,6 +128,10 @@ public class MainActivity extends AppCompatActivity {
 
                         item.setChecked(true);
                         setTitle(item.getTitle());
+                        mDrawerLayout.closeDrawers();
+                        break;
+                    case R.id.about_app:
+                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
                         mDrawerLayout.closeDrawers();
                         break;
                 }
