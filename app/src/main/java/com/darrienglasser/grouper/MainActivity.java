@@ -74,80 +74,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.mainView);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_closed);
-
-        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                // no op
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                // no op
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                // no op
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-                // no op
-            }
-        });
-
-        mNavView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.numbered_list:
-                        getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.content_view, new NumberGroupFragment()).commit();
-
-                        item.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-                        setTitle(item.getTitle());
-                        break;
-                    case R.id.named_list:
-                        getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.content_view, new NameGroupFragment()).commit();
-
-                        item.setChecked(true);
-                        setTitle(item.getTitle());
-                        mDrawerLayout.closeDrawers();
-                        break;
-                    case R.id.saved_names:
-                        getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.content_view, new NameCreatorFragment()).commit();
-
-                        item.setChecked(true);
-                        setTitle(item.getTitle());
-                        mDrawerLayout.closeDrawers();
-                        break;
-                    case R.id.about_app:
-                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
-                        mDrawerLayout.closeDrawers();
-                        break;
-                }
-
-                mNavView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
-
-                // Save layout to restore later
-                saveLayoutState(item.getItemId());
-                return false;
-            }
-        });
     }
 
     @Override
@@ -166,6 +92,58 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         restoreLayoutState();
+
+        mNavView.setNavigationItemSelectedListener(
+            new NavigationView.OnNavigationItemSelectedListener() {
+
+                @Override
+                public boolean onNavigationItemSelected(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.numbered_list:
+                            getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.content_view, new NumberGroupFragment()).commit();
+
+                            item.setChecked(true);
+                            mDrawerLayout.closeDrawers();
+                            setTitle(item.getTitle());
+                            break;
+                        case R.id.named_list:
+                            getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.content_view, new NameGroupFragment()).commit();
+
+                            item.setChecked(true);
+                            setTitle(item.getTitle());
+                            mDrawerLayout.closeDrawers();
+                            break;
+                        case R.id.saved_names:
+                            getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.content_view, new NameCreatorFragment()).commit();
+
+                            item.setChecked(true);
+                            setTitle(item.getTitle());
+                            mDrawerLayout.closeDrawers();
+                            break;
+                        case R.id.about_app:
+                            startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                            mDrawerLayout.closeDrawers();
+                            break;
+                    }
+
+                    mNavView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+
+                    // Save layout to restore later
+                    saveLayoutState(item.getItemId());
+                    return false;
+                }
+            });
     }
 
     @Override
